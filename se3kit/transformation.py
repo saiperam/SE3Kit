@@ -2,7 +2,7 @@ import numpy as np
 from se3kit.rotation import Rotation
 from se3kit.translation import Translation
 from se3kit.hpoint import HPoint
-from se3kit.ros_compat import Pose, Point, Quaternion, Vector3
+from se3kit.ros_compat import Pose, Point, Quaternion, Vector3, use_geomsg
 
 class Transformation:
     """Represents a 4x4 homogeneous transformation matrix with rotation and translation."""

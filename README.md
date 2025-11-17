@@ -1,4 +1,4 @@
-# se3kit
+# SE3kit
 
 Lightweight Python library for 3D rigid-body transforms, rotations, and simple robot kinematics.
 
