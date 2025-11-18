@@ -28,11 +28,10 @@ class Transformation:
             if isinstance(init, np.ndarray):
                 # Direct 4x4 numpy array treated as a full transformation matrix
                 self._matrix = init
-            # elif use_geomsg and isinstance(init, Pose):
-            #     # Single argument is a ROS Pose message and rotation and translation are extracted
-            #     self.rotation = Rotation(init.orientation)
-            #     self.translation = Translation(init.position)
-            # TODO: solve issue with use_geomsg
+            elif use_geomsg and isinstance(init, Pose):
+                # Single argument is a ROS Pose message and rotation and translation are extracted
+                self.rotation = Rotation(init.orientation)
+                self.translation = Translation(init.position)
 
             elif isinstance(init, Translation):
                 # Single argument is a Translation object
@@ -206,12 +205,10 @@ class Transformation:
         :rtype: Pose
         :raises ModuleNotFoundError: if geometry_msgs module not available
         """
-        # if not use_geomsg:
-        #     raise ModuleNotFoundError('geometry_msgs module not available')
-        # return Pose(position=self.translation.as_geometry_point(),
-        #             orientation=self.rotation.as_geometry_orientation())
-        # TODO: fix this
-        pass
+        if not use_geomsg:
+            raise ModuleNotFoundError('geometry_msgs module not available')
+        return Pose(position=self.translation.as_geometry_point(),
+                    orientation=self.rotation.as_geometry_orientation())
 
     
     @staticmethod

@@ -7,6 +7,7 @@ methods for axis-angle, ZYX Euler angles, and ROS geometry types.
 """
 
 import numpy as np
+import quaternion  # Requires numpy-quaternion package
 from math import pi, sin, cos, atan2, sqrt
 from se3kit.utils import deg2rad, rad2deg, is_identity, skew_to_vector
 from se3kit.ros_compat import get_ros_geometry_msgs, ROS_VERSION
@@ -35,11 +36,10 @@ class Rotation:
             # Default to the identity rotation (3x3 identity matrix)
             self.m = np.eye(3)
 
-        # elif isinstance(init_value, np.quaternion):
-        #     # Case 2: Input is a numpy quaternion
-        #     # Convert quaternion to a 3x3 rotation matrix
-        #     self.m = np.quaternion.as_rotation_matrix(init_value)
-        # TODO: solve AttributeError: module 'numpy' has no attribute 'quaternion'
+        elif isinstance(init_value, quaternion.quaternion):
+            # Case 2: Input is a numpy quaternion
+            # Convert quaternion to a 3x3 rotation matrix
+            self.m = quaternion.as_rotation_matrix(init_value)
 
 
         elif use_geomsg and isinstance(init_value, Quaternion):

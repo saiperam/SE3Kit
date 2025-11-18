@@ -11,11 +11,11 @@ import numpy as np
 import math
 
 # Import ROS compatibility layer and core SE3Kit modules
-from ros_compat import ROS_VERSION
-from robot import Robot  # assuming robot.py exists in same folder
-import rotation as Rotation
-import translation as Translation
-import transformation as Transformation
+from se3kit.ros_compat import ROS_VERSION
+from se3kit.robot import Robot  # assuming robot.py exists in same folder
+import se3kit.rotation as Rotation
+import se3kit.translation as Translation
+import se3kit.transformation as Transformation
 
 
 class Tests(unittest.TestCase):

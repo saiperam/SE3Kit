@@ -31,10 +31,9 @@ class Translation:
         if init_xyz is None:
             # Default zero vector
             self.m = np.zeros(3)
-        # elif use_geomsg and isinstance(init_xyz, (Point, Vector3)):
-        #     # ROS Point/Vector3 message
-        #     self.m = np.array([init_xyz.x, init_xyz.y, init_xyz.z])
-        # TODO: solve issue with use_geomsg
+        elif use_geomsg and isinstance(init_xyz, (Point, Vector3)):
+            # ROS Point/Vector3 message
+            self.m = np.array([init_xyz.x, init_xyz.y, init_xyz.z])
         elif isinstance(init_xyz, HPoint):
             # Homogeneous point
             self.m = init_xyz.xyz
