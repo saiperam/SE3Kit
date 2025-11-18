@@ -51,6 +51,8 @@ class Rotation:
         elif isinstance(init_value, np.ndarray):
             # Case 4: Input is a numpy array
             # Expecting a 3x3 rotation matrix directly
+            if not Rotation.is_valid(init_value):
+                raise ValueError(f"Rotation matrix is invalid.")
             self.m = init_value
 
         elif isinstance(init_value, Rotation):
@@ -62,8 +64,7 @@ class Rotation:
             # Case 6: Input type is not supported
             raise TypeError(f"Cannot initialize Rotation from {type(init_value)}")
         
-        if not Rotation.is_valid(self.m):
-            raise ValueError(f"Rotation matrix is invalid.")
+        
 
 
     def __mul__(self, other):

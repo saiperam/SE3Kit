@@ -27,7 +27,10 @@ class Transformation:
             init = args[0]
             if isinstance(init, np.ndarray):
                 # Direct 4x4 numpy array treated as a full transformation matrix
+                if not Transformation.is_valid(init):
+                    raise ValueError(f"Transformation matrix is invalid.")
                 self._matrix = init
+
             elif use_geomsg and isinstance(init, Pose):
                 # Single argument is a ROS Pose message and rotation and translation are extracted
                 self.rotation = Rotation(init.orientation)
@@ -47,8 +50,8 @@ class Transformation:
             # Raise a TypeError to indicate incorrect usage
             raise TypeError(f"Invalid arguments for Transformation: {args}")
         
-        if not Transformation.is_valid(self.m):
-            raise ValueError(f"Transformation matrix is invalid.")
+        
+        
 
     def __mul__(self, other):
         """
@@ -257,7 +260,7 @@ class Transformation:
 
             homog_vec = mat[3, :]
             if not np.allclose(homog_vec, np.asarray([0, 0, 0, 1]), atol=1e-9):
-                raise ValueError("Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {mat[3, :]}")
+                raise ValueError(f"Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {mat[3, :]}")
             
 
         except ValueError as e:

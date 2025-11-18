@@ -42,10 +42,10 @@ class Translation:
             self.m = np.copy(init_xyz.m)
         else:
             # Array or list-like input
+            if not Translation.is_valid(init_xyz):
+                raise ValueError(f"Translation vector is invalid.")
             self.m = np.squeeze(np.array(init_xyz))
             
-        if not Translation.is_valid(self.m):
-            raise ValueError(f"Translation vector is invalid.")
 
     
     def __add__(self, other):
