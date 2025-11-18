@@ -138,6 +138,7 @@ class Rotation:
     # # Create Rotation from roll-pitch-yaw sequence (XYZ order), flipping to ZYX internally
     # from_rpy = lambda rpy, degrees=False: Rotation.from_zyx(np.flip(rpy), degrees=degrees)
 
+    @staticmethod
     def from_zyx_degrees(euler):
         """
         Creates a Rotation object from ZYX Euler angles in degrees.
@@ -149,7 +150,7 @@ class Rotation:
         """
         return Rotation.from_zyx(euler, degrees=True)
 
-
+    @staticmethod
     def from_ABC(abc, degrees=False):
         """
         Creates a Rotation object from ABC angles, equivalent to ZYX Euler angles.
@@ -163,7 +164,7 @@ class Rotation:
         """
         return Rotation.from_zyx(abc, degrees=degrees)
 
-
+    @staticmethod
     def from_ABC_degrees(abc):
         """
         Creates a Rotation object from ABC angles in degrees.
@@ -175,7 +176,7 @@ class Rotation:
         """
         return Rotation.from_ABC(abc, degrees=True)
 
-
+    @staticmethod
     def from_rpy(rpy, degrees=False):
         """
         Creates a Rotation object from roll-pitch-yaw angles (XYZ order),
