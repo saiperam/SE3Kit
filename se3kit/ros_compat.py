@@ -5,25 +5,32 @@ This module provides lightweight imports and utilities for
 handling ROS1 vs ROS2 message type differences.
 """
 
+import importlib.util as _importlib_util
+
 use_geomsg = False
+Pose = Point = Quaternion = Vector3 = None
+ROS_VERSION = 0
 
-try:
-    from geometry_msgs.msg import Point, Pose, Quaternion, Vector3
-    import rclpy  # ROS2
-
-    ROS_VERSION = 2
-    use_geomsg = True
-except ModuleNotFoundError:
+# Probe ROS2 first, then ROS1 using importlib to avoid importing unused modules
+if _importlib_util.find_spec("rclpy") is not None:
     try:
-        from geometry_msgs.msg import Point, Pose, Quaternion, Vector3
-        import rospy  # ROS1
+        from geometry_msgs.msg import Point, Pose, Quaternion, Vector3  # type: ignore
+
+        ROS_VERSION = 2
+        use_geomsg = True
+    except Exception:
+        ROS_VERSION = 0
+elif _importlib_util.find_spec("rospy") is not None:
+    try:
+        from geometry_msgs.msg import Point, Pose, Quaternion, Vector3  # type: ignore
 
         ROS_VERSION = 1
         use_geomsg = True
-    except ModuleNotFoundError:
-        # Not running in a ROS environment at all
-        Pose = Point = Quaternion = Vector3 = None
+    except Exception:
         ROS_VERSION = 0
+else:
+    Pose = Point = Quaternion = Vector3 = None
+    ROS_VERSION = 0
 
 
 def get_ros_geometry_msgs():

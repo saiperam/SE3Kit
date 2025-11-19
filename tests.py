@@ -10,11 +10,10 @@ import unittest
 
 import numpy as np
 
+from se3kit import rotation, transformation, translation
+
 # Import ROS compatibility layer and core SE3Kit modules
 from se3kit.ros_compat import ROS_VERSION
-import se3kit.rotation as Rotation
-import se3kit.transformation as Transformation
-import se3kit.translation as Translation
 
 
 class Tests(unittest.TestCase):
@@ -35,7 +34,7 @@ class Tests(unittest.TestCase):
 
     def test_rotation_matrix_validity(self):
         # Valid rotation matrix
-        Mat = np.asarray(
+        mat = np.asarray(
             [
                 [0.8389628, 0.4465075, -0.3110828],
                 [0.1087932, 0.4224873, 0.8998158],
@@ -43,12 +42,12 @@ class Tests(unittest.TestCase):
             ]
         )
         self.assertTrue(
-            Rotation.Rotation.is_valid(Mat, verbose=False),
-            "Expected Mat to be a valid rotation matrix",
+            rotation.Rotation.is_valid(mat, verbose=False),
+            "Expected mat to be a valid rotation matrix",
         )
 
         # Invalid rotation matrix (determinant not ~1)
-        Mat_bad = np.asarray(
+        mat_bad = np.asarray(
             [
                 [1.8389628, 0.4465075, -0.3110828],
                 [0.1087932, 0.4224873, 0.8998158],
@@ -56,26 +55,26 @@ class Tests(unittest.TestCase):
             ]
         )
         self.assertFalse(
-            Rotation.Rotation.is_valid(Mat_bad, verbose=False),
-            "Expected Mat_bad to be invalid as a rotation matrix",
+            rotation.Rotation.is_valid(mat_bad, verbose=False),
+            "Expected mat_bad to be invalid as a rotation matrix",
         )
 
     def test_translation_vector_validity(self):
         vec = np.asarray([1, 2, 3])
         self.assertTrue(
-            Translation.Translation.is_valid(vec, verbose=False),
+            translation.Translation.is_valid(vec, verbose=False),
             "Expected vec to be a valid translation vector",
         )
 
         vec_bad = np.asarray([[1], [2], [3.0], [3]])
         self.assertFalse(
-            Translation.Translation.is_valid(vec_bad, verbose=False),
+            translation.Translation.is_valid(vec_bad, verbose=False),
             "Expected vec_bad to be invalid (size != 3)",
         )
 
     def test_transformation_validity(self):
         # 3x3 input -> invalid transformation (expects 4x4)
-        Mat3 = np.asarray(
+        mat3 = np.asarray(
             [
                 [0.8389628, 0.4465075, -0.3110828],
                 [0.1087932, 0.4224873, 0.8998158],
@@ -83,12 +82,12 @@ class Tests(unittest.TestCase):
             ]
         )
         self.assertFalse(
-            Transformation.Transformation.is_valid(Mat3, verbose=False),
+            transformation.Transformation.is_valid(mat3, verbose=False),
             "3x3 matrix should not be a valid transformation",
         )
 
         # 3x4 input -> invalid
-        Mat3x4 = np.asarray(
+        mat3x4 = np.asarray(
             [
                 [0.8389628, 0.4465075, -0.3110828, 1],
                 [0.1087932, 0.4224873, 0.8998158, 2.0],
@@ -96,12 +95,12 @@ class Tests(unittest.TestCase):
             ]
         )
         self.assertFalse(
-            Transformation.Transformation.is_valid(Mat3x4, verbose=False),
+            transformation.Transformation.is_valid(mat3x4, verbose=False),
             "3x4 matrix should not be a valid transformation",
         )
 
         # Proper 4x4 homogeneous transformation
-        Mat4 = np.asarray(
+        mat4 = np.asarray(
             [
                 [0.8389628, 0.4465075, -0.3110828, 1],
                 [0.1087932, 0.4224873, 0.8998158, 2.0],
@@ -110,14 +109,14 @@ class Tests(unittest.TestCase):
             ]
         )
         self.assertTrue(
-            Transformation.Transformation.is_valid(Mat4, verbose=False),
+            transformation.Transformation.is_valid(mat4, verbose=False),
             "4x4 matrix should be a valid transformation",
         )
 
     def test_rotation_from_zyx(self):
         angles = [0, 0, 0]
         self.assertTrue(
-            Rotation.Rotation.from_rpy(angles).is_identity(),
+            rotation.Rotation.from_rpy(angles).is_identity(),
             "Rotation from zero RPY should be identity",
         )
 

@@ -12,6 +12,9 @@ import numpy as np
 from se3kit.hpoint import HPoint
 from se3kit.ros_compat import Point, Vector3, use_geomsg
 
+# Constants
+_CARTESIAN_SIZE = 3
+
 
 class Translation:
     """Represents a 3D translation vector."""
@@ -250,8 +253,10 @@ class Translation:
             if not isinstance(vec, np.ndarray):
                 raise ValueError(f"Translation vector must be np.ndarray, got {type(vec)}")
 
-            if vec.size != 3:
-                raise ValueError(f"Translation vector must be of length 3, got {vec.size}")
+            if vec.size != _CARTESIAN_SIZE:
+                raise ValueError(
+                    f"Translation vector must be of length {_CARTESIAN_SIZE}, got {vec.size}"
+                )
 
         except ValueError as e:
             if verbose:

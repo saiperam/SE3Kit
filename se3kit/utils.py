@@ -5,6 +5,10 @@ import numpy as np
 # Global Constants
 NUMERICAL_TOLERANCE = 1e-14  # Default numerical tolerance
 
+# Sizes used in vector helpers
+_VECTOR3_SIZE = 3
+_SCREW_SIZE = 6
+
 
 def deg2rad(d):
     """
@@ -73,9 +77,9 @@ def vector_to_skew(v):
     :raises ValueError: If the input vector is not size 3 or 6.
     """
     v = np.squeeze(v)
-    if v.size == 3:
+    if v.size == _VECTOR3_SIZE:
         return np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
-    elif v.size == 6:
+    elif v.size == _SCREW_SIZE:
         return np.array(
             [[0, -v[2], v[1], v[3]], [v[2], 0, -v[0], v[4]], [-v[1], v[0], 0, v[5]], [0, 0, 0, 0]]
         )

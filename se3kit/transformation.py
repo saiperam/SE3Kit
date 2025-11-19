@@ -5,6 +5,9 @@ from se3kit.ros_compat import Pose, use_geomsg
 from se3kit.rotation import Rotation
 from se3kit.translation import Translation
 
+# Constants to avoid magic-numbers in argument checks
+_TRANSLATION_ROTATION_ARG_COUNT = 2
+
 
 class Transformation:
     """Represents a 4x4 homogeneous transformation matrix with rotation and translation."""
@@ -42,7 +45,11 @@ class Transformation:
                 # Single argument is a Translation object
                 # Only the translation is set; rotation defaults to identity
                 self.translation = init
-        elif len(args) == 2 and isinstance(args[0], Translation) and isinstance(args[1], Rotation):
+        elif (
+            len(args) == _TRANSLATION_ROTATION_ARG_COUNT
+            and isinstance(args[0], Translation)
+            and isinstance(args[1], Rotation)
+        ):
             # TTwo arguments: first is Translation, second is Rotation
             # Directly set translation and rotation components
             self.translation = args[0]
@@ -211,7 +218,7 @@ class Transformation:
         )
 
     @staticmethod
-    def from_xyz_mm_ABC_degrees(xyzABC):
+    def from_xyz_mm_abc_degrees(xyz_abc):
         """
         Creates a Transformation from a 6-element array: XYZ translation in meters
         and ABC Euler angles in degrees.
@@ -221,10 +228,13 @@ class Transformation:
         :return: Transformation object
         :rtype: Transformation
         """
-        return Transformation(Translation(xyzABC[:3]), Rotation.from_ABC_degrees(xyzABC[3:6]))
+        return Transformation(Translation(xyz_abc[:3]), Rotation.from_ABC_degrees(xyz_abc[3:6]))
+
+    # Backwards-compatible alias for older API
+    from_xyz_mm_ABC_degrees = from_xyz_mm_abc_degrees  # noqa: N815
 
     @staticmethod
-    def compose(A, B):
+    def compose(a, b):
         """
         Composes two Transformations (matrix multiplication).
 
@@ -235,7 +245,7 @@ class Transformation:
         :return: Resulting Transformation
         :rtype: Transformation
         """
-        return Transformation(A.matrix @ B.matrix)
+        return Transformation(a.matrix @ b.matrix)
 
     @staticmethod
     def is_valid(mat, verbose=False):
@@ -264,12 +274,11 @@ class Transformation:
             if not mat.shape == (4, 4):
                 raise ValueError(f"Transformation matrix must be 4x4, got {mat.shape}.")
 
-            Rot = mat[:3, :3]
-            if not Rotation.is_valid(Rot):
+            rot = mat[:3, :3]
+            if not Rotation.is_valid(rot):
                 raise ValueError("Transformation matrix has invalid rotation part.")
-
-            Vec = mat[:3, 3]
-            if not Translation.is_valid(Vec):
+            vec = mat[:3, 3]
+            if not Translation.is_valid(vec):
                 raise ValueError("Transformation matrix has invalid translation part.")
 
             homog_vec = mat[3, :]

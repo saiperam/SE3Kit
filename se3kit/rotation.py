@@ -151,31 +151,25 @@ class Rotation:
         """
         return Rotation.from_zyx(euler, degrees=True)
 
-    @staticmethod
-    def from_ABC(abc, degrees=False):
-        """
-        Creates a Rotation object from ABC angles, equivalent to ZYX Euler angles.
+    # legacy mixed-case name removed in favor of lowercase alias below
 
-        :param abc: Angles in ABC (ZYX) order
-        :type abc: list, tuple, or np.ndarray
-        :param degrees: If True, angles are in degrees; otherwise radians
-        :type degrees: bool
-        :return: Rotation object representing the rotation
-        :rtype: Rotation
+    @staticmethod
+    def from_abc(abc, degrees=False):
+        """
+        Lowercase alias for creating a Rotation from ABC angles (ZYX order).
         """
         return Rotation.from_zyx(abc, degrees=degrees)
 
     @staticmethod
-    def from_ABC_degrees(abc):
+    def from_abc_degrees(abc):
         """
-        Creates a Rotation object from ABC angles in degrees.
+        Lowercase alias for creating a Rotation from ABC angles (degrees).
+        """
+        return Rotation.from_abc(abc, degrees=True)
 
-        :param abc: Angles in ABC (ZYX) order, in degrees
-        :type abc: list, tuple, or np.ndarray
-        :return: Rotation object representing the rotation
-        :rtype: Rotation
-        """
-        return Rotation.from_ABC(abc, degrees=True)
+    # Backwards-compatible aliases (legacy mixed-case names)
+    from_ABC = from_abc  # noqa: N815
+    from_ABC_degrees = from_abc_degrees  # noqa: N815
 
     @staticmethod
     def from_rpy(rpy, degrees=False):
@@ -254,7 +248,7 @@ class Rotation:
     # # Returns a np.quaternion object representing the same rotation
     # as_quat = lambda self: np.quaternion.from_rotation_matrix(self.m)
 
-    def as_ABC(self, degrees=False):
+    def as_abc(self, degrees=False):
         """
         Returns the Euler angles in ABC order (ZYX), optionally in degrees.
 
@@ -266,6 +260,9 @@ class Rotation:
         :rtype: np.ndarray
         """
         return self.as_zyx(degrees=degrees)
+
+    # Legacy alias
+    as_ABC = as_abc  # noqa: N815
 
     def as_rpy(self, degrees=False):
         """
