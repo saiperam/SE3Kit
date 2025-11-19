@@ -251,7 +251,7 @@ class Translation:
         """
         try:
             if not isinstance(vec, np.ndarray):
-                raise ValueError(f"Translation vector must be np.ndarray, got {type(type(vec))}")
+                raise ValueError(f"Translation vector must be np.ndarray, got {type(vec)}")
 
             if vec.size != 3:
                 raise ValueError(f"Translation vector must be of length 3, got {vec.size}")
