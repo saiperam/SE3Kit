@@ -1,21 +1,23 @@
 """
 ROS compatibility layer for SE3Kit modules.
 
-This module provides lightweight imports and utilities for 
+This module provides lightweight imports and utilities for
 handling ROS1 vs ROS2 message type differences.
 """
 
 use_geomsg = False
 
 try:
+    from geometry_msgs.msg import Point, Pose, Quaternion, Vector3
     import rclpy  # ROS2
-    from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
+
     ROS_VERSION = 2
     use_geomsg = True
 except ModuleNotFoundError:
     try:
+        from geometry_msgs.msg import Point, Pose, Quaternion, Vector3
         import rospy  # ROS1
-        from geometry_msgs.msg import Pose, Point, Quaternion, Vector3
+
         ROS_VERSION = 1
         use_geomsg = True
     except ModuleNotFoundError:

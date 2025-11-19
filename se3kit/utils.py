@@ -1,13 +1,15 @@
-import numpy as np
 from math import pi
 
+import numpy as np
+
 # Global Constants
-NUMERICAL_TOLERANCE = 1e-14 # Default numerical tolerance
+NUMERICAL_TOLERANCE = 1e-14  # Default numerical tolerance
+
 
 def deg2rad(d):
     """
     Converts degrees to radians
-    
+
     :param d: Angle value in degrees
     :return: The angle in radians
     :return_type: float | np.ndarray
@@ -15,6 +17,7 @@ def deg2rad(d):
     if isinstance(d, (np.ndarray, list, tuple)):
         return np.deg2rad(np.array(d))
     return d / 180 * pi
+
 
 def rad2deg(r):
     """
@@ -26,6 +29,7 @@ def rad2deg(r):
     if isinstance(r, (np.ndarray, list, tuple)):
         return np.rad2deg(np.array(r))
     return r / pi * 180
+
 
 def is_near(a, b, tol=NUMERICAL_TOLERANCE):
     """
@@ -42,6 +46,7 @@ def is_near(a, b, tol=NUMERICAL_TOLERANCE):
     """
     return abs(a - b) < tol
 
+
 def is_identity(a, tol=NUMERICAL_TOLERANCE):
     """
     Checks if a square matrix is approximately the identity matrix.
@@ -54,6 +59,7 @@ def is_identity(a, tol=NUMERICAL_TOLERANCE):
     :rtype: bool
     """
     return np.allclose(a, np.eye(a.shape[0]), atol=tol)
+
 
 def vector_to_skew(v):
     """
@@ -68,16 +74,14 @@ def vector_to_skew(v):
     """
     v = np.squeeze(v)
     if v.size == 3:
-        return np.array([[    0, -v[2],  v[1]],
-                         [ v[2],     0, -v[0]],
-                         [-v[1],  v[0],     0]])
+        return np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
     elif v.size == 6:
-        return np.array([[    0, -v[2],  v[1], v[3]],
-                         [ v[2],     0, -v[0], v[4]],
-                         [-v[1],  v[0],     0, v[5]],
-                         [    0,     0,     0,  0]])
+        return np.array(
+            [[0, -v[2], v[1], v[3]], [v[2], 0, -v[0], v[4]], [-v[1], v[0], 0, v[5]], [0, 0, 0, 0]]
+        )
     else:
-        raise ValueError(f'Not implemented for input size {v.size}')
+        raise ValueError(f"Not implemented for input size {v.size}")
+
 
 def skew_to_vector(sk):
     """
@@ -91,6 +95,6 @@ def skew_to_vector(sk):
     :raises ValueError: If input matrix is not 3x3.
     """
     if sk.shape == (3, 3):
-        return np.array([sk[2,1], sk[0,2], sk[1,0]])
+        return np.array([sk[2, 1], sk[0, 2], sk[1, 0]])
     else:
-        raise ValueError(f'Not implemented for shape {sk.shape}')
+        raise ValueError(f"Not implemented for shape {sk.shape}")

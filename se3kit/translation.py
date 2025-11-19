@@ -8,8 +8,9 @@ Compatible with ROS1 and ROS2 using ros_compat.py.
 """
 
 import numpy as np
-from se3kit.ros_compat import Point, Vector3, use_geomsg
+
 from se3kit.hpoint import HPoint
+from se3kit.ros_compat import Point, Vector3, use_geomsg
 
 
 class Translation:
@@ -43,11 +44,9 @@ class Translation:
         else:
             # Array or list-like input
             if not Translation.is_valid(init_xyz):
-                raise ValueError(f"Translation vector is invalid.")
+                raise ValueError("Translation vector is invalid.")
             self.m = np.squeeze(np.array(init_xyz))
-            
 
-    
     def __add__(self, other):
         """
         Adds two Translation vectors element-wise.
@@ -104,7 +103,6 @@ class Translation:
             return Translation(self.m / other)
         raise TypeError(f"Cannot divide Translation with {type(other)}")
 
-    
     @property
     def x(self):
         """
@@ -175,7 +173,6 @@ class Translation:
         """
         return self.m
 
-    
     def norm(self):
         """
         Computes the Euclidean norm (magnitude) of the translation vector.
@@ -264,7 +261,6 @@ class Translation:
         if verbose:
             print("✔️  Vector is a valid translation vector.")
         return True
-    
 
     # ---------------- ROS message conversion ----------------
     def as_geometry_point(self):
@@ -278,5 +274,5 @@ class Translation:
         :raises ModuleNotFoundError: If geometry_msgs is not available
         """
         if not use_geomsg:
-            raise ModuleNotFoundError('geometry_msgs module not available')
+            raise ModuleNotFoundError("geometry_msgs module not available")
         return Point(x=self.x, y=self.y, z=self.z)

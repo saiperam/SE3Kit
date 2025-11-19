@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class HPoint:
     """Represents a homogeneous point in 3D space (4x1 vector)."""
 
@@ -40,7 +41,6 @@ class HPoint:
             # Invalid number of arguments — must be either 3 (x, y, z) or 1 (array)
             raise ValueError(f"Cannot initialize HPoint from {len(args)} arguments")
 
-    
     @property
     def x(self):
         """

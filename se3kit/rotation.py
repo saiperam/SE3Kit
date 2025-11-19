@@ -6,11 +6,13 @@ with constructors from quaternions, Euler angles, and utility
 methods for axis-angle, ZYX Euler angles, and ROS geometry types.
 """
 
+from math import atan2, cos, pi, sin, sqrt
+
 import numpy as np
 import quaternion  # Requires numpy-quaternion package
-from math import pi, sin, cos, atan2, sqrt
-from se3kit.utils import deg2rad, rad2deg, is_identity, skew_to_vector
-from se3kit.ros_compat import get_ros_geometry_msgs, ROS_VERSION
+
+from se3kit.ros_compat import get_ros_geometry_msgs
+from se3kit.utils import deg2rad, is_identity, rad2deg, skew_to_vector
 
 # Retrieve the ROS geometry message types (Point, Quaternion, Pose, Vector3)
 Point, Quaternion, Pose, Vector3 = get_ros_geometry_msgs()
@@ -41,7 +43,6 @@ class Rotation:
             # Convert quaternion to a 3x3 rotation matrix
             self.m = quaternion.as_rotation_matrix(init_value)
 
-
         elif use_geomsg and isinstance(init_value, Quaternion):
             # Case 3: Input is a ROS geometry_msgs Quaternion (ROS1 or ROS2)
             # Convert ROS Quaternion to numpy quaternion first, then to rotation matrix
@@ -52,7 +53,7 @@ class Rotation:
             # Case 4: Input is a numpy array
             # Expecting a 3x3 rotation matrix directly
             if not Rotation.is_valid(init_value):
-                raise ValueError(f"Rotation matrix is invalid.")
+                raise ValueError("Rotation matrix is invalid.")
             self.m = init_value
 
         elif isinstance(init_value, Rotation):
@@ -63,7 +64,7 @@ class Rotation:
         else:
             # Case 6: Input type is not supported
             raise TypeError(f"Cannot initialize Rotation from {type(init_value)}")
-        
+
     def __mul__(self, other):
         """
         Multiplies two rotations and returns the product.
@@ -116,12 +117,15 @@ class Rotation:
 
         # Construct the 3x3 rotation matrix using ZYX (yaw-pitch-roll) convention
         # Rows correspond to new x, y, z axes after rotation
-        return Rotation(np.array([
-            [ca*cb,  ca*sb*sg - sa*cg,  ca*sb*cg + sa*sg],
-            [sa*cb,  sa*sb*sg + ca*cg,  sa*sb*cg - ca*sg],
-            [-sb,    cb*sg,             cb*cg]
-        ]))
-
+        return Rotation(
+            np.array(
+                [
+                    [ca * cb, ca * sb * sg - sa * cg, ca * sb * cg + sa * sg],
+                    [sa * cb, sa * sb * sg + ca * cg, sa * sb * cg - ca * sg],
+                    [-sb, cb * sg, cb * cg],
+                ]
+            )
+        )
 
     # # Create Rotation from Euler angles in degrees
     # from_zyx_degrees = lambda euler: Rotation.from_zyx(euler, degrees=True)
@@ -188,7 +192,6 @@ class Rotation:
         """
         return Rotation.from_zyx(np.flip(rpy), degrees=degrees)
 
-
     def is_identity(self):
         """
         Checks whether the rotation matrix represents the identity rotation.
@@ -218,21 +221,20 @@ class Rotation:
         :rtype: np.ndarray
         """
 
-
         if self.is_identity():
             # If the rotation is the identity matrix (no rotation), return zero angles
             return np.zeros(3)
 
         # Compute ZYX Euler angles from the rotation matrix
         # a = yaw (rotation about Z axis)
-        a = atan2(self.m[1,0], self.m[0,0])
+        a = atan2(self.m[1, 0], self.m[0, 0])
 
         # b = pitch (rotation about Y axis)
         # sqrt(self.m[2,1]**2 + self.m[2,2]**2) computes the projection of the rotation onto the XZ-plane
-        b = atan2(-self.m[2,0], sqrt(self.m[2,1]**2 + self.m[2,2]**2))
+        b = atan2(-self.m[2, 0], sqrt(self.m[2, 1] ** 2 + self.m[2, 2] ** 2))
 
         # g = roll (rotation about X axis)
-        g = atan2(self.m[2,1], self.m[2,2])
+        g = atan2(self.m[2, 1], self.m[2, 2])
 
         # Combine the three Euler angles into a single array [yaw, pitch, roll]
         angles = np.array([a, b, g])
@@ -265,7 +267,6 @@ class Rotation:
         """
         return self.as_zyx(degrees=degrees)
 
-
     def as_rpy(self, degrees=False):
         """
         Returns the Euler angles in roll-pitch-yaw (RPY) order [X, Y, Z].
@@ -280,7 +281,6 @@ class Rotation:
         """
         return np.flip(self.as_zyx(degrees=degrees))
 
-
     def as_quat(self):
         """
         Converts the rotation matrix to a quaternion.
@@ -291,7 +291,6 @@ class Rotation:
         :rtype: np.quaternion
         """
         return np.quaternion.from_rotation_matrix(self.m)
-
 
     def as_geometry_orientation(self):
         """
@@ -307,9 +306,9 @@ class Rotation:
         # Check if the ROS geometry messages are available (ROS1 or ROS2)
         if not use_geomsg:
             # If unavailable, then raise an error
-            raise ModuleNotFoundError('geometry_msgs module not available')
-        
-        # Convert the internal rotation matrix to a quaternion object 
+            raise ModuleNotFoundError("geometry_msgs module not available")
+
+        # Convert the internal rotation matrix to a quaternion object
         q = self.as_quat()
 
         # Construct and return a ROS-compatible Quaternion message
@@ -333,20 +332,19 @@ class Rotation:
         :rtype: (np.ndarray, float)
         """
 
-
         tr = np.trace(self.m)
-        if self.is_identity(): # Identity case
+        if self.is_identity():  # Identity case
             # if the rotation is the identity
             return np.array([1, 0, 0]), 0
         elif abs(tr + 1) < TOLERANCE:  # 180 degree case
             # Loop through diagonal elements to find a valid axis component
             for i in range(3):
-                if abs(self.m[i,i] + 1) > TOLERANCE:
+                if abs(self.m[i, i] + 1) > TOLERANCE:
                     w = np.zeros(3)
-                    w[i] = self.m[i,i] + 1
+                    w[i] = self.m[i, i] + 1
                     w /= np.linalg.norm(w)
                     return w, pi
-        else: # General case
+        else:  # General case
             # Compute axis-angle from rotation matrix
             theta = np.arccos((tr - 1) / 2)
             w = skew_to_vector((self.m - self.m.T) * 0.5 / np.sin(theta))

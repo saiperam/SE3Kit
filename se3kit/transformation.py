@@ -1,8 +1,10 @@
 import numpy as np
+
+from se3kit.hpoint import HPoint
+from se3kit.ros_compat import Pose, use_geomsg
 from se3kit.rotation import Rotation
 from se3kit.translation import Translation
-from se3kit.hpoint import HPoint
-from se3kit.ros_compat import Pose, Point, Quaternion, Vector3, use_geomsg
+
 
 class Transformation:
     """Represents a 4x4 homogeneous transformation matrix with rotation and translation."""
@@ -28,7 +30,7 @@ class Transformation:
             if isinstance(init, np.ndarray):
                 # Direct 4x4 numpy array treated as a full transformation matrix
                 if not Transformation.is_valid(init):
-                    raise ValueError(f"Transformation matrix is invalid.")
+                    raise ValueError("Transformation matrix is invalid.")
                 self._matrix = init
 
             elif use_geomsg and isinstance(init, Pose):
@@ -49,8 +51,6 @@ class Transformation:
             # Any other combination of arguments is invalid
             # Raise a TypeError to indicate incorrect usage
             raise TypeError(f"Invalid arguments for Transformation: {args}")
-        
-        
 
     def __mul__(self, other):
         """
@@ -64,9 +64,8 @@ class Transformation:
         """
         if isinstance(other, Transformation):
             return Transformation(self._matrix @ other._matrix)
-        raise TypeError(f'Invalid multiplication type {type(other)}')
+        raise TypeError(f"Invalid multiplication type {type(other)}")
 
-    
     @property
     def rotation(self):
         """
@@ -88,10 +87,9 @@ class Transformation:
         :param val: Rotation object or 3x3 rotation matrix
         :type val: Rotation | np.ndarray
         """
-         # Let Rotation class handle all type checking and conversion
+        # Let Rotation class handle all type checking and conversion
         self._matrix[0:3, 0:3] = Rotation(val).m
 
-    
     @property
     def translation(self):
         """
@@ -182,7 +180,6 @@ class Transformation:
         """Returns a copy with translation scaled from millimeters to meters."""
         return Transformation(self.translation.scaled_mm_to_m(), self.rotation)
 
-    
     def transform_hpoint(self, p):
         """
         Transforms a homogeneous point by this Transformation.
@@ -196,7 +193,6 @@ class Transformation:
         assert isinstance(p, HPoint)
         return HPoint(self._matrix @ p.m)
 
-    
     def as_geometry_pose(self):
         """
         Converts this Transformation to a ROS Pose message.
@@ -208,11 +204,12 @@ class Transformation:
         :raises ModuleNotFoundError: if geometry_msgs module not available
         """
         if not use_geomsg:
-            raise ModuleNotFoundError('geometry_msgs module not available')
-        return Pose(position=self.translation.as_geometry_point(),
-                    orientation=self.rotation.as_geometry_orientation())
+            raise ModuleNotFoundError("geometry_msgs module not available")
+        return Pose(
+            position=self.translation.as_geometry_point(),
+            orientation=self.rotation.as_geometry_orientation(),
+        )
 
-    
     @staticmethod
     def from_xyz_mm_ABC_degrees(xyzABC):
         """
@@ -239,7 +236,7 @@ class Transformation:
         :rtype: Transformation
         """
         return Transformation(A.matrix @ B.matrix)
-    
+
     @staticmethod
     def is_valid(mat, verbose=False):
         """
@@ -260,23 +257,26 @@ class Transformation:
         """
         try:
             if not isinstance(mat, np.ndarray):
-                raise ValueError(f"Transformation matrix must be of type np.ndarray, got {type(mat)}")
-            
-            if not mat.shape == (4,4):
+                raise ValueError(
+                    f"Transformation matrix must be of type np.ndarray, got {type(mat)}"
+                )
+
+            if not mat.shape == (4, 4):
                 raise ValueError(f"Transformation matrix must be 4x4, got {mat.shape}.")
-            
+
             Rot = mat[:3, :3]
             if not Rotation.is_valid(Rot):
-                raise ValueError(f"Transformation matrix has invalid rotation part.")
-            
+                raise ValueError("Transformation matrix has invalid rotation part.")
+
             Vec = mat[:3, 3]
             if not Translation.is_valid(Vec):
-                raise ValueError(f"Transformation matrix has invalid translation part.")
+                raise ValueError("Transformation matrix has invalid translation part.")
 
             homog_vec = mat[3, :]
             if not np.allclose(homog_vec, np.asarray([0, 0, 0, 1]), atol=1e-9):
-                raise ValueError(f"Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {mat[3, :]}")
-            
+                raise ValueError(
+                    f"Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {mat[3, :]}"
+                )
 
         except ValueError as e:
             if verbose:
