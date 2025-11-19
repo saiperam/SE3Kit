@@ -241,7 +241,7 @@ class Transformation:
         return Transformation(A.matrix @ B.matrix)
     
     @staticmethod
-    def is_valid(mat, verbose = False):
+    def is_valid(mat, verbose=False):
         """
         Checks if the input is a valid 4x4 homogeneous transformation matrix.
 
