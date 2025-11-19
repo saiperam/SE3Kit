@@ -6,6 +6,5 @@
     - Create transforms and compose them
     - Transform a homogeneous point
 - Testing
-- Contributing
-- License
+- Fix dependency management 
 
