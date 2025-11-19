@@ -237,6 +237,18 @@ class Translation:
 
     @staticmethod
     def is_valid(vec, verbose = False):
+        """
+        Checks if the input is a valid translation vector.
+
+        A valid translation vector is a NumPy ndarray of length 3.
+
+        :param vec: The vector to validate.
+        :type vec: np.ndarray
+        :param verbose: If True, prints validation messages.
+        :type verbose: bool
+        :return: True if valid, False otherwise.
+        :rtype: bool
+        """
         try:
             if not isinstance(vec, np.ndarray):
                 raise ValueError(f"Translation vector must be np.ndarray, got {type(type(vec))}")
