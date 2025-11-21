@@ -235,6 +235,20 @@ class Translation:
         """
         return self.scaled_copy(0.001)
 
+    def as_geometry_point(self):
+        """
+        Converts the translation to a ROS geometry_msgs Point message.
+
+        Works for ROS1 or ROS2 depending on the environment.
+
+        :return: ROS Point message
+        :rtype: Point
+        :raises ModuleNotFoundError: If geometry_msgs is not available
+        """
+        if not use_geomsg:
+            raise ModuleNotFoundError("geometry_msgs module not available")
+        return Point(x=self.x, y=self.y, z=self.z)
+
     @staticmethod
     def is_valid(vec, verbose=False):
         """
@@ -260,24 +274,9 @@ class Translation:
 
         except ValueError as e:
             if verbose:
-                print("❌ ", e)
+                print("Not a valid translation. ", e)
             return False
 
         if verbose:
-            print("✔️  Vector is a valid translation vector.")
+            print("Vector is a valid translation vector.")
         return True
-
-    # ---------------- ROS message conversion ----------------
-    def as_geometry_point(self):
-        """
-        Converts the translation to a ROS geometry_msgs Point message.
-
-        Works for ROS1 or ROS2 depending on the environment.
-
-        :return: ROS Point message
-        :rtype: Point
-        :raises ModuleNotFoundError: If geometry_msgs is not available
-        """
-        if not use_geomsg:
-            raise ModuleNotFoundError("geometry_msgs module not available")
-        return Point(x=self.x, y=self.y, z=self.z)

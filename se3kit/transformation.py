@@ -289,9 +289,9 @@ class Transformation:
 
         except ValueError as e:
             if verbose:
-                print("❌ ", e)
+                print("Not a valid transformation. ", e)
             return False
 
         if verbose:
-            print("✔️  Matrix is a valid transformation matrix.")
+            print("Matrix is a valid transformation matrix.")
         return True
