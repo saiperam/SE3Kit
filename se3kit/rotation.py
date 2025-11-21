@@ -170,31 +170,19 @@ class Rotation:
         """
 
         # Convert input Euler angles to radians if they are in degrees, else just convert to NumPy array
-        e = deg2rad(euler) if degrees else np.array(euler)
+        angles = deg2rad(euler) if degrees else np.array(euler)
 
-        # Extrinsic rotation is equivalent to flipping the order of intrinsic rotation
-        if extrinsic:
-            euler = np.flip(euler)
+        # Unpack angles into separate components: alpha = Z , beta = Y , gamma = X
+        alpha, beta, gamma = angles
 
-        # Unpack angles into separate components: alpha = Z , beta = Y' , gamma = X"
-        alpha, beta, gamma = e
+        rx = Rotation.rotate_x(gamma)
+        ry = Rotation.rotate_y(beta)
+        rz = Rotation.rotate_z(alpha)
 
-        # Precompute cosines and sines of each angle for matrix construction
-        ca, sa = np.cos(alpha), np.sin(alpha)
-        cb, sb = np.cos(beta), np.sin(beta)
-        cg, sg = np.cos(gamma), np.sin(gamma)
-
-        # Construct the 3x3 rotation matrix using ZY'X" convention
-        # Rows correspond to new x, y, z axes after rotation
-        return Rotation(
-            np.array(
-                [
-                    [ca * cb, ca * sb * sg - sa * cg, ca * sb * cg + sa * sg],
-                    [sa * cb, sa * sb * sg + ca * cg, sa * sb * cg - ca * sg],
-                    [-sb, cb * sg, cb * cg],
-                ]
-            )
-        )
+        # Construct the 3x3 rotation matrix
+        # if intrinsic: 1) rotate for alpha around Z 2) rotate for beta around Y' 3) rotate for gamma around X"
+        # if extrinsic: 1) rotate for alpha around Z 2) rotate for beta around Y 3) rotate for gamma around X
+        return rz * ry * rx if not extrinsic else rx * ry * rz
 
     @staticmethod
     def from_abc(abc, degrees=False):
