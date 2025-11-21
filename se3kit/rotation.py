@@ -198,8 +198,8 @@ class Rotation:
     @staticmethod
     def from_rpy(rpy, extrinsic=True, degrees=False):
         """
-        Creates a Rotation object from roll-pitch-yaw angles (XYZ order).
-        As in aviation roll-pitch-yaw are usually considered among fix axes, this method assumes extrinsic rotation as default.
+        Creates a Rotation object from roll(around X)-pitch(around Y)-yaw(around Z) angles.
+        As in aviation roll-pitch-yaw are usually considered among fixed axes, this method assumes extrinsic rotation as default.
 
         :param rpy: Roll-Pitch-Yaw angles [X, Y, Z]
         :type rpy: list, tuple, or np.ndarray
@@ -210,7 +210,8 @@ class Rotation:
         :return: Rotation object representing the rotation
         :rtype: Rotation
         """
-        return Rotation.from_zyx(rpy, extrinsic=extrinsic, degrees=degrees)
+        rpy = np.asarray(rpy)
+        return Rotation.from_zyx(np.flip(rpy), extrinsic=not (extrinsic), degrees=degrees)
 
     def as_zyx(self, extrinsic=False, degrees=False):
         """
