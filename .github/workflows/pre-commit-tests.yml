@@ -1,4 +1,4 @@
-name: Python package
+name: Pre-commit tests
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           # Install project dev extras; quoting prevents shell globbing
           pip install -U '.[dev]'
 
-      - name: Run pre-commit hooks (black, ruff, unit tests)
+      - name: Pre-commit tests
         run: |
           # ensure pre-commit is available in the runner
           python -m pip install pre-commit
