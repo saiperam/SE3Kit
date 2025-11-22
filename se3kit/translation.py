@@ -7,10 +7,15 @@ scaling, unit conversion, and ROS message conversion.
 Compatible with ROS1 and ROS2 using ros_compat.py.
 """
 
+import logging
+
 import numpy as np
 
 from se3kit.hpoint import HPoint
 from se3kit.ros_compat import Point, Vector3, use_geomsg
+
+# module logger
+logger = logging.getLogger(__name__)
 
 # Constants
 _CARTESIAN_SIZE = 3
@@ -251,20 +256,20 @@ class Translation:
         """
         try:
             if not isinstance(vec, np.ndarray):
-                raise ValueError(f"Translation vector must be np.ndarray, got {type(vec)}")
+                raise TypeError(f"Translation vector must be np.ndarray, got {type(vec)}")
 
             if vec.size != _CARTESIAN_SIZE:
                 raise ValueError(
                     f"Translation vector must be of length {_CARTESIAN_SIZE}, got {vec.size}"
                 )
 
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             if verbose:
-                print("❌ ", e)
+                logger.error("❌ %s", e)
             return False
 
         if verbose:
-            print("✔️  Vector is a valid translation vector.")
+            logger.info("✔️  Vector is a valid translation vector.")
         return True
 
     # ---------------- ROS message conversion ----------------

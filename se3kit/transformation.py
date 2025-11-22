@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 
 from se3kit.hpoint import HPoint
@@ -28,6 +30,9 @@ class Transformation:
         """
         self._matrix = np.eye(4)
 
+        # module logger
+        logging.getLogger(__name__)
+
         if len(args) == 1:
             init = args[0]
             if isinstance(init, np.ndarray):
@@ -50,7 +55,7 @@ class Transformation:
             and isinstance(args[0], Translation)
             and isinstance(args[1], Rotation)
         ):
-            # TTwo arguments: first is Translation, second is Rotation
+            # Two arguments: first is Translation, second is Rotation
             # Directly set translation and rotation components
             self.translation = args[0]
             self.rotation = args[1]
@@ -197,7 +202,8 @@ class Transformation:
         :rtype: HPoint
         :raises AssertionError: if p is not an HPoint
         """
-        assert isinstance(p, HPoint)
+        if not isinstance(p, HPoint):
+            raise TypeError(f"transform_hpoint expects HPoint, got {type(p)}")
         return HPoint(self._matrix @ p.m)
 
     def as_geometry_pose(self):
@@ -267,7 +273,7 @@ class Transformation:
         """
         try:
             if not isinstance(mat, np.ndarray):
-                raise ValueError(
+                raise TypeError(
                     f"Transformation matrix must be of type np.ndarray, got {type(mat)}"
                 )
 
@@ -284,14 +290,15 @@ class Transformation:
             homog_vec = mat[3, :]
             if not np.allclose(homog_vec, np.asarray([0, 0, 0, 1]), atol=1e-9):
                 raise ValueError(
-                    f"Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {mat[3, :]}"
+                    f"Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {mat[3, :] }"
                 )
 
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             if verbose:
-                print("❌ ", e)
+                logger = logging.getLogger(__name__)
+                logger.error("❌ %s", e)
             return False
 
         if verbose:
-            print("✔️  Matrix is a valid transformation matrix.")
+            logging.getLogger(__name__).info("✔️  Matrix is a valid transformation matrix.")
         return True
