@@ -231,6 +231,9 @@ class Rotation:
             # If the rotation is the identity matrix (no rotation), return zero angles
             return np.zeros(3)
 
+        if extrinsic:
+            return np.flip(self.as_xyz(extrinsic=False, degrees=degrees))
+
         # Compute ZY'X" Euler angles from the rotation matrix
         # alpha = rotation about Z axis
         alpha = np.arctan2(self.m[1, 0], self.m[0, 0])
@@ -245,6 +248,42 @@ class Rotation:
         angles = (
             np.flip(np.array([alpha, beta, gamma])) if extrinsic else np.array([alpha, beta, gamma])
         )
+
+        # Convert to degrees if requested, otherwise leave in radians
+        return rad2deg(angles) if degrees else angles
+
+    def as_xyz(self, extrinsic=False, degrees=False):
+        """
+        Converts the rotation matrix to XY'Z" Euler angles, using intrinsic rotation as default.
+
+        Handles the singularity cases when the rotation is identity or near 180 degrees.
+
+        :param degrees: If True, returns angles in degrees; otherwise in radians.
+        :type degrees: bool, optional (default=False)
+        :param extrinsic: If True, extrinsic rotation is assumed (with respect to the fixed frame)
+        :type extrinsic: bool
+        :return: Euler angles as a 3-element array [x, y', z"].
+        :rtype: np.ndarray
+        """
+        if self.is_identity():
+            # If the rotation is the identity matrix (no rotation), return zero angles
+            return np.zeros(3)
+
+        if extrinsic:
+            return np.flip(self.as_zyx(extrinsic=False, degrees=degrees))
+
+        # Compute XY'Z" Euler angles from the rotation matrix
+        # alpha = rotation about Z" axis
+        alpha = np.arctan2(-self.m[0, 1], self.m[0, 0])
+
+        # beta = rotation about Y' axis
+        beta = np.arctan2(self.m[0, 2], np.sqrt(self.m[1, 2] ** 2 + self.m[2, 2] ** 2))
+
+        # gamma = rotation about X axis
+        gamma = np.arctan2(self.m[1, 2], self.m[2, 2])
+
+        # Combine the three Euler angles into a single array [X, Y', Z"]
+        angles = np.array([gamma, beta, alpha])
 
         # Convert to degrees if requested, otherwise leave in radians
         return rad2deg(angles) if degrees else angles
