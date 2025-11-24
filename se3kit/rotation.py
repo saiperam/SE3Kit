@@ -475,7 +475,7 @@ class Rotation:
         :param rot_2: Second rotation matrix
         :type rot_2: se3kit.rotation.Rotation
         :param tol: Tolerance. Default value corresponding to 1 deg
-        :type tol: bool
+        :type tol: float
         :param degrees: If True, tol angle should be inputted in degrees; otherwise in radians
         :type degrees: bool
         :return: specifying whether two rotation matrices are too similar
