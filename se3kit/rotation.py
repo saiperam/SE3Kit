@@ -446,6 +446,26 @@ class Rotation:
         return self.m[:, 2]
 
     @staticmethod
+    def angle_difference(rot_1, rot_2, degrees=False):
+        """
+        Returns the angle of difference between two rotation matrices (axis angle representation) using Rodrigues' rotation formula.
+
+        :param rot_1: First rotation matrix
+        :type rot_1: se3kit.rotation.Rotation
+        :param rot_2: Second rotation matrix
+        :type rot_2: se3kit.rotation.Rotation
+        :param degrees: If True, angle is returned in degrees; otherwise in radians
+        :type degrees: bool
+        :return: angle difference in axis angle representation
+        :rtype: float
+        """
+        rot_rel = rot_1.T * rot_2
+        trace_val = np.trace(rot_rel)
+        # Clip for numerical stability
+        cos_theta = np.clip((trace_val - 1) / 2, -1.0, 1.0)
+        return rad2deg(np.arccos(cos_theta)) if degrees else np.arccos(cos_theta)
+
+    @staticmethod
     def is_valid(mat, verbose=False, tol=1e-6):
         """
         Checks if the given matrix is a valid 3x3 rotation matrix.
