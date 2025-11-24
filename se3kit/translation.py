@@ -25,7 +25,7 @@ _CARTESIAN_SIZE = 3
 class Translation:
     """Represents a 3D translation vector."""
 
-    def __init__(self, init_xyz=None):
+    def __init__(self, init_xyz=None, unit="m"):
         """
         Initializes translation from various sources.
 
@@ -55,6 +55,8 @@ class Translation:
             if not Translation.is_valid(init_xyz):
                 raise ValueError("Translation vector is invalid.")
             self.m = np.squeeze(np.array(init_xyz))
+
+        self.unit = unit
 
     def __add__(self, other):
         """
