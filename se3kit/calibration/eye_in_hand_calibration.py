@@ -96,7 +96,7 @@ class EyeInHandCalibration:
         # 2. SVD for rotation
         u, s, v_trans = np.linalg.svd(m)
         q_x = v_trans[-1, :]  # last singular vector
-        q_x = quaternion.quaternion(q_x / np.linalg.norm(q_x))
+        q_x = quaternion.from_float_array(q_x / np.linalg.norm(q_x))
 
         r_x = Rotation(q_x).m
 
