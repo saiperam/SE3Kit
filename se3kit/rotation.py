@@ -320,7 +320,7 @@ class Rotation:
         :return: Euler angles [roll, pitch, yaw]
         :rtype: np.ndarray
         """
-        return self.as_zyx(extrinsic=extrinsic, degrees=degrees)
+        return self.as_xyz(extrinsic=extrinsic, degrees=degrees)
 
     def as_quat(self):
         """
