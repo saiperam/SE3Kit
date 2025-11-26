@@ -13,7 +13,6 @@ import numpy as np
 
 from se3kit.hpoint import HPoint
 from se3kit.ros_compat import Point, Vector3, use_geomsg
-from se3kit.utils import is_near
 
 # module logger
 logger = logging.getLogger(__name__)
@@ -260,18 +259,17 @@ class Translation:
     @staticmethod
     def are_close(trans_1, trans_2, tol=0.001):
         """
-        Returns a bool specifying whether two rotation matrices are too similar by checking the angle difference in axis angle representation.
-
+        Returns a bool specifying whether two translation vectors are close to each other within a given tolerance.
+        The comparison is based on the Euclidean distance between the two translation vectors.
         :param trans_1: First translation
         :type trans_1: se3kit.translation.Translation
         :param trans_2: Second translation
         :type trans_2: se3kit.translation.Translation
         :param tol: Tolerance. Default value corresponding to 1 mm
         :type tol: float
-        :return: specifying whether two translation vectors are too close
-        :rtype: bool
+        :return: True if the translation vectors are close, False otherwise
         """
-        return is_near(trans_1, trans_2, tol=tol)
+        return (trans_1 - trans_2).norm() < tol
 
     @staticmethod
     def is_valid(vec, verbose=False):
