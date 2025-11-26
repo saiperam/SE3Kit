@@ -251,9 +251,7 @@ class Rotation:
         gamma = np.arctan2(self.m[2, 1], self.m[2, 2])
 
         # Combine the three Euler angles into a single array [yaw, pitch, roll]
-        angles = (
-            np.flip(np.array([alpha, beta, gamma])) if extrinsic else np.array([alpha, beta, gamma])
-        )
+        angles = np.flip(np.array([alpha, beta, gamma]))
 
         # Convert to degrees if requested, otherwise leave in radians
         return rad2deg(angles) if degrees else angles
