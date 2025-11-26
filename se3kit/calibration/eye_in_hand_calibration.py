@@ -75,7 +75,6 @@ class EyeInHandCalibration:
             )
 
         m_list = []
-
         # 1. Form all pairwise motion pairs (i,j)
         for i in range(len(self.robot_transforms) - 1):
             for j in range(i + 1, len(self.robot_transforms)):
@@ -115,7 +114,7 @@ class EyeInHandCalibration:
                 t_b = mat_b.translation.m
 
                 lhs.append(r_a - np.eye(3))
-                rhs.append(r_x @ t_b - t_a)
+                rhs.append((r_x @ (t_b - t_a).T).reshape(3, 1))
 
         lhs = np.vstack(lhs)
         rhs = np.vstack(rhs)
