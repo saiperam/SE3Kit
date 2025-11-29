@@ -27,7 +27,7 @@ MIN_NUMBER_OF_POSES = 2
 
 class PivotCalibration:
     """
-    Representing a pivot calibration method.
+    Represents a pivot calibration method.
     """
 
     def __init__(self, init_value=None):
@@ -37,25 +37,29 @@ class PivotCalibration:
         :param init_value: list of ROS poses or se3kit.transformation.Transformation poses
         :type init_value: list
         """
-        if init_value is None or len(init_value) == 0:
+        if init_value is None:
             # Case 1: No input provided
+            raise TypeError("Cannot initialize calibration without input data.")
+
+        elif len(init_value) == 0:
+            # Case 2: Input is an empty list
             raise TypeError("Cannot initialize calibration from empty list.")
 
         elif not isinstance(init_value, list):
-            # Case 2: Input is not a list
+            # Case 3: Input is not a list
             raise TypeError("Input is not a list.")
 
         elif all(isinstance(pose_i, Transformation) for pose_i in init_value):
-            # Case 3: Input is a list of se3kit.transformation.Transformations
+            # Case 4: Input is a list of se3kit.transformation.Transformations
             self.calib_poses = init_value
 
         elif all(isinstance(pose_i, Pose) for pose_i in init_value):
-            # Case 4: Input is a list of ROS poses
+            # Case 5: Input is a list of ROS poses
             # Convert poses to type Transformation first
             self.calib_poses = [Transformation(pose_i) for pose_i in init_value]
 
         else:
-            # Case 5: Input type is not supported
+            # Case 6: Input type is not supported
             raise TypeError(f"Cannot initialize calibration from {type(init_value)}")
 
     def run_pivot_calibration(self):
@@ -64,7 +68,7 @@ class PivotCalibration:
         the divot location wrt the EE, and the calibration residual.
 
         :return: tuple of tip wrt EE (tuple of 3 floats), divot wrt EE (tuple of 3 floats), calibration residual (ndarray of floats)
-        :rtype: tuple
+        :rtype: (tuple, tuple, np.ndarray)
         """
 
         num_of_poses = len(self.calib_poses)
@@ -143,7 +147,9 @@ class PivotCalibration:
         elif all(isinstance(pose_i, Pose) for pose_i in poses):
             self.calib_poses.extend([Transformation(pose_i) for pose_i in poses])
         else:
-            raise TypeError(f"Cannot add poses from {type(poses[0])}")
+            raise TypeError(
+                f"Cannot add poses from {type(poses[0]) if poses else 'unknown (empty list)'}"
+            )
 
     def reset_poses(self):
         """

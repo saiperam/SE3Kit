@@ -111,6 +111,8 @@ class Rotation:
 
         :param theta: Rotation angle
         :type theta: float
+        :param degrees: If True, theta is in degrees; otherwise in radians (default: False)
+        :type degrees: bool
         :return: Rotation matrix around x axis
         :rtype: Rotation
         """
@@ -128,6 +130,8 @@ class Rotation:
 
         :param theta: Rotation angle
         :type theta: float
+        :param degrees: If True, theta is in degrees; otherwise in radians (default: False)
+        :type degrees: bool
         :return: Rotation matrix around y axis
         :rtype: Rotation
         """
@@ -145,6 +149,8 @@ class Rotation:
 
         :param theta: Rotation angle
         :type theta: float
+        :param degrees: If True, theta is in degrees; otherwise in radians (default: False)
+        :type degrees: bool
         :return: Rotation matrix around z axis
         :rtype: Rotation
         """
@@ -217,7 +223,7 @@ class Rotation:
         :rtype: Rotation
         """
         rpy = np.asarray(rpy)
-        return Rotation.from_zyx(np.flip(rpy), extrinsic=not (extrinsic), degrees=degrees)
+        return Rotation.from_zyx(np.flip(rpy), extrinsic=not extrinsic, degrees=degrees)
 
     def as_zyx(self, extrinsic=False, degrees=False):
         """
@@ -250,8 +256,8 @@ class Rotation:
         # gamma = rotation about X" axis
         gamma = np.arctan2(self.m[2, 1], self.m[2, 2])
 
-        # Combine the three Euler angles into a single array [yaw, pitch, roll]
-        angles = np.flip(np.array([alpha, beta, gamma]))
+        # Combine the three Euler angles into a single array
+        angles = np.array([alpha, beta, gamma])
 
         # Convert to degrees if requested, otherwise leave in radians
         return rad2deg(angles) if degrees else angles
@@ -371,7 +377,7 @@ class Rotation:
         :type degrees: bool
         :return: Tuple containing:
                 - axis vector as a 3-element np.ndarray
-                - rotation angle in radians as a float
+                - rotation angle as a float (in radians or degrees based on the degrees parameter)
         :rtype: (np.ndarray, float)
         """
         tr = np.trace(self.m)
@@ -466,7 +472,7 @@ class Rotation:
     @staticmethod
     def are_close(rot_1, rot_2, tol=0.0174533, degrees=False):
         """
-        Returns a bool specifying whether two rotation matrices are too similar by checking the angle difference in axis angle representation.
+        Returns a bool specifying whether two rotation matrices are close to each other by checking the angle difference in axis angle representation.
 
         :param rot_1: First rotation matrix
         :type rot_1: se3kit.rotation.Rotation
@@ -476,7 +482,7 @@ class Rotation:
         :type tol: float
         :param degrees: If True, tol angle should be inputted in degrees; otherwise in radians
         :type degrees: bool
-        :return: specifying whether two rotation matrices are too similar
+        :return: True if the rotation matrices are close (within tolerance), False otherwise
         :rtype: bool
         """
         return Rotation.angle_difference(rot_1, rot_2, degrees=degrees) < tol
