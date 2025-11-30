@@ -1,8 +1,12 @@
 """
 Unit tests for EyeInHandCalibration class.
 
-Uses posecal.txt dataset to build robot and camera transformations
-and verifies that calibration runs and returns a valid result.
+Uses test pose data from four files:
+- robot_rotations.txt
+- camera_rotations.txt
+- robot_translations.txt
+- camera_translations.txt
+to build robot and camera transformations and verifies that calibration runs and returns a valid result.
 """
 
 import unittest
