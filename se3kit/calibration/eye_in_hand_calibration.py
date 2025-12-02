@@ -96,7 +96,8 @@ class EyeInHandCalibration:
 
         # 1. Form all pairwise motion pairs (i,j)
         m_list = [
-            _make_m_block(ii[0].rotation.as_quat(), ii[1].rotation.as_quat()) for ii in motion_pairs
+            _make_m_block(robot_motion.rotation.as_quat(), camera_motion.rotation.as_quat())
+            for robot_motion, camera_motion in motion_pairs
         ]
 
         # Stacking
@@ -110,10 +111,10 @@ class EyeInHandCalibration:
         r_x = Rotation(q_x).m
 
         # 3. Translation solve (lhs * p_x = rhs)
-        lhs = [(ii[0].rotation.m - np.eye(3)) for ii in motion_pairs]
+        lhs = [(robot_motion.rotation.m - np.eye(3)) for robot_motion, _ in motion_pairs]
         rhs = [
-            (r_x @ (ii[1].translation.m - ii[0].translation.m).T).reshape(3, 1)
-            for ii in motion_pairs
+            (r_x @ (camera_motion.translation.m - robot_motion.translation.m).T).reshape(3, 1)
+            for robot_motion, camera_motion in motion_pairs
         ]
 
         lhs = np.vstack(lhs)
