@@ -64,10 +64,9 @@ def is_identity(a, tol=NUMERICAL_TOLERANCE):
     """
     n = a.shape[0]
     identity = np.eye(n)
-    
+
     # Flatten both matrices and compare element-wise using is_near
-    return all(is_near(x, y, tol) for x, y in zip(a.flat, identity.flat))
-    
+    return all(is_near(x, y, tol) for x, y in zip(a.flat, identity.flat))  # noqa: B905
 
 
 def vector_to_skew(v):

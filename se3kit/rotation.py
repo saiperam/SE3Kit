@@ -300,7 +300,6 @@ class Rotation:
             y = (r[0, 2] - r[2, 0]) / s
             z = (r[1, 0] - r[0, 1]) / s
 
-        
         elif (r[0, 0] > r[1, 1]) and (r[0, 0] > r[2, 2]):
             s = np.sqrt(1.0 + r[0, 0] - r[1, 1] - r[2, 2]) * 2  # s = 4*x
             w = (r[2, 1] - r[1, 2]) / s
@@ -448,10 +447,10 @@ class Rotation:
                 raise ValueError(f"Rotation matrix must be 3x3, got {mat.shape}")
 
             if not all(
-                is_near(a, b, tol=tol) for a, b in zip((mat.T @ mat).flat, np.eye(3).flat)
+                is_near(a, b, tol=tol)
+                for a, b in zip((mat.T @ mat).flat, np.eye(3).flat)  # noqa: B905
             ):
                 raise ValueError("Matrix is not orthogonal (R.T @ R != I)")
-
 
             det_val = np.linalg.det(mat)
             if not np.isclose(det_val, 1.0, atol=tol):
