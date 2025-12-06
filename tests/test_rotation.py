@@ -86,10 +86,10 @@ class TestRotation(unittest.TestCase):
             raise ValueError(f"Quaternion lengths mismatch: {len(q1)} vs {len(q2)}")
 
         # Direct comparison using is_near
-        direct = all(is_near(a, b, tol) for a, b in zip(q1, q2))  # noqa: B905
+        direct = all(is_near(a, b, tol) for a, b in zip(q1, q2))
 
         # Comparison with negated quaternion using is_near
-        negated = all(is_near(a, -b, tol) for a, b in zip(q1, q2))  # noqa: B905
+        negated = all(is_near(a, -b, tol) for a, b in zip(q1, q2))
 
         return direct or negated
 
@@ -153,7 +153,7 @@ class TestRotation(unittest.TestCase):
         def arrays_near(a, b, tol):
             if a.shape != b.shape:
                 return False
-            return all(is_near(x, y, tol) for x, y in zip(a.flat, b.flat))  # noqa: B905
+            return all(is_near(x, y, tol) for x, y in zip(a.flat, b.flat))
 
         r_abc = rotation.Rotation.from_abc(eg)
         r_zyx = rotation.Rotation.from_zyx(eg)
@@ -187,7 +187,7 @@ class TestRotation(unittest.TestCase):
             b = np.asarray(b)
             if a.shape != b.shape:
                 return False
-            return all(is_near(x, y, tol) for x, y in zip(a.flat, b.flat))  # noqa: B905
+            return all(is_near(x, y, tol) for x, y in zip(a.flat, b.flat))
 
         rzyx = rotation.Rotation.from_zyx(eg)
         rrpy = rotation.Rotation.from_rpy(np.flip(eg))
@@ -239,7 +239,7 @@ class TestRotation(unittest.TestCase):
 
         # The reconstructed matrix should be close to original
         self.assertTrue(
-            all(is_near(a, b, tol=1e-6) for a, b in zip(r.m.flat, r2.m.flat)),  # noqa: B905
+            all(is_near(a, b, tol=1e-6) for a, b in zip(r.m.flat, r2.m.flat)),
             f"Round-trip ZYX Euler → matrix mismatch:\n"
             f"Expected (original):\n{r.m}\n"
             f"Got (reconstructed):\n{r2.m}",
@@ -249,7 +249,7 @@ class TestRotation(unittest.TestCase):
         abc = r.as_ABC()
         r3 = rotation.Rotation.from_ABC(abc)
         self.assertTrue(
-            all(is_near(a, b, tol=1e-6) for a, b in zip(r.m.flat, r3.m.flat)),  # noqa: B905
+            all(is_near(a, b, tol=1e-6) for a, b in zip(r.m.flat, r3.m.flat)),
             f"Round-trip ABC Euler → matrix mismatch:\n"
             f"Expected (original):\n{r.m}\n"
             f"Got (reconstructed):\n{r3.m}",
@@ -289,13 +289,13 @@ class TestRotation(unittest.TestCase):
         axis2, angle2 = r.as_axisangle()
 
         # Axis can flip direction, adjust if needed
-        if not all(is_near(a, b, tol=1e-7) for a, b in zip(axis, axis2)):  # noqa: B905
+        if not all(is_near(a, b, tol=1e-7) for a, b in zip(axis, axis2)):
             axis2 = -axis2
             angle2 = -angle2
 
         # Check axis
         self.assertTrue(
-            all(is_near(a, b, tol=1e-7) for a, b in zip(axis, axis2)),  # noqa: B905
+            all(is_near(a, b, tol=1e-7) for a, b in zip(axis, axis2)),
             f"Axis mismatch: {axis} vs {axis2}",
         )
 

@@ -314,7 +314,7 @@ class Transformation:
             homog_vec = mat[3, :]
             expected = np.array([0, 0, 0, 1])
 
-            if not all(is_near(a, b, tol=1e-9) for a, b in zip(homog_vec, expected)):  # noqa: B905
+            if not all(is_near(a, b, tol=1e-9) for a, b in zip(homog_vec, expected)):
                 raise ValueError(
                     f"Transformation matrix is not affine. Last row must be [0, 0, 0, 1], got {homog_vec}"
                 )

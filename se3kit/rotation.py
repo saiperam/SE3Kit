@@ -543,10 +543,7 @@ class Rotation:
             if mat.shape != (3, 3):
                 raise ValueError(f"Rotation matrix must be 3x3, got {mat.shape}")
 
-            if not all(
-                is_near(a, b, tol=tol)
-                for a, b in zip((mat.T @ mat).flat, np.eye(3).flat)  # noqa: B905
-            ):
+            if not all(is_near(a, b, tol=tol) for a, b in zip((mat.T @ mat).flat, np.eye(3).flat)):
                 raise ValueError("Matrix is not orthogonal (R.T @ R != I)")
 
             det_val = np.linalg.det(mat)

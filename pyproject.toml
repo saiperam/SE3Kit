@@ -60,7 +60,7 @@ dev = [
 
 [tool.black]
 line-length = 100
-target-version = ["py311"]
+target-version = ["py39"]
 include = '\\.pyi?$'
 exclude = '''
 /(
@@ -73,7 +73,7 @@ exclude = '''
 '''
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py39"
 fixable = ["ALL"]
 
 select = [

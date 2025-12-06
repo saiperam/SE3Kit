@@ -18,7 +18,7 @@ def deg2rad(d):
     :return: The angle in radians
     :return_type: float | np.ndarray
     """
-    if isinstance(d, np.ndarray | list | tuple):
+    if isinstance(d, (np.ndarray, list, tuple)):
         return np.deg2rad(np.array(d))
     return d / 180 * pi
 
@@ -30,7 +30,7 @@ def rad2deg(r):
     :return: The angle in degrees
     :return_type: float | np.ndarray
     """
-    if isinstance(r, np.ndarray | list | tuple):
+    if isinstance(r, (np.ndarray, list, tuple)):
         return np.rad2deg(np.array(r))
     return r / pi * 180
 
@@ -66,7 +66,7 @@ def is_identity(a, tol=NUMERICAL_TOLERANCE):
     identity = np.eye(n)
 
     # Flatten both matrices and compare element-wise using is_near
-    return all(is_near(x, y, tol) for x, y in zip(a.flat, identity.flat))  # noqa: B905
+    return all(is_near(x, y, tol) for x, y in zip(a.flat, identity.flat))
 
 
 def vector_to_skew(v):
