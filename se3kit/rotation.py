@@ -609,7 +609,9 @@ class Rotation:
         axis = np.asarray(axis, dtype=float)
         norm = np.linalg.norm(axis)
         if is_near(norm, 0, tol=1e-10):
-            raise ValueError(f"Rotation axis has near-zero length ({norm}), cannot normalize axis {axis.tolist()}.")
+            raise ValueError(
+                f"Rotation axis has near-zero length ({norm}), cannot normalize axis {axis.tolist()}."
+            )
 
         axis = axis / norm
 
