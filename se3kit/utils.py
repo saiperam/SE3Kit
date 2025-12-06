@@ -91,7 +91,7 @@ def vector_to_skew(v):
         raise ValueError(f"Not implemented for input size {v.size}")
 
 
-def skew_to_vector(sk, tol=1e-8):
+def skew_to_vector(sk, tol=NUMERICAL_TOLERANCE):
     """
     Converts a 3x3 skew-symmetric matrix back into a 3D vector.
 

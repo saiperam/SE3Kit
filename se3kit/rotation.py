@@ -338,7 +338,7 @@ class Rotation:
         """
         r = self.m
         tr = np.trace(r)
-        # Find the largest diagonal element
+        # Choose the most numerically stable branch based on trace or diagonal elements
         if tr > 0:
             s = np.sqrt(tr + 1.0) * 2  # s = 4*w
             w = 0.25 * s
@@ -602,7 +602,7 @@ class Rotation:
         """
         axis = np.asarray(axis, dtype=float)
         norm = np.linalg.norm(axis)
-        if norm == 0:
+        if np.isclose(norm, 0, atol=1e-10):
             raise ValueError("Rotation axis has zero length, cannot normalize [0, 0, 0].")
 
         axis = axis / norm
