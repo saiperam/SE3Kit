@@ -31,7 +31,9 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/daniyalmaroufi/se3kit"
+Homepage = "https://pypi.org/project/se3kit/"
+Documentation = "https://daniyalmaroufi.github.io/se3kit/"
+Repository = "https://github.com/daniyalmaroufi/se3kit"
 
 [build-system]
 requires = ["setuptools", "setuptools-scm[toml]", "wheel"]
