@@ -23,9 +23,17 @@
 
 This library is pure Python with minimal dependencies (`numpy`, `numpy-quaternion`).
 
-### From Source (Recommended)
+### PyPI (Recommended)
 
-To install the library in editable mode:
+To install the latest stable version from PyPI:
+
+```bash
+pip install se3kit
+```
+
+### From Source (Development)
+
+To install the library in editable mode from source:
 
 ```bash
 git clone https://github.com/daniyalmaroufi/se3kit.git
