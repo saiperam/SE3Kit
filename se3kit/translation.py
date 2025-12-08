@@ -49,6 +49,16 @@ class Translation:
         elif isinstance(init_xyz, Translation):
             # Copy constructor
             self.m = np.copy(init_xyz.m)
+        elif isinstance(init_xyz, list):
+            # List with 3 elements
+            if not Translation.is_valid(np.asarray(init_xyz)):
+                raise ValueError("Translation vector is invalid.")
+            self.m = np.array(init_xyz)
+        elif isinstance(init_xyz, np.ndarray):
+            # Numpy array with 3 elements
+            if not Translation.is_valid(np.asarray(init_xyz)):
+                raise ValueError("Translation vector is invalid.")
+            self.m = np.squeeze(init_xyz)
         else:
             # Array or list-like input
             if not Translation.is_valid(init_xyz):
