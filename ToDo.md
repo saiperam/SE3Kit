@@ -1,11 +1,10 @@
 # ToDo List
-- Tests
+- Check tests coverage
 - save to csv
-- API reference documentation
-- Enhance README with usage examples
-    - Create transforms and compose them
+- Enhance README with examples
+    - Create transformations and compose them
     - Transform a homogeneous point
-- Testing
+- Add support for multiplication of transformation with a hpoint
 - (Omid) Test eye_in_hand and pivot calibrations
 - (Omid) Add "add_poses", identify duplicate poses and "remove_poses" methods for eye_in_hand
 
