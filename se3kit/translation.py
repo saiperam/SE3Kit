@@ -276,22 +276,27 @@ class Translation:
         """
         Checks if the input is a valid translation vector.
 
-        A valid translation vector is a NumPy ndarray of length 3.
+        A valid translation vector is an array-like object of length 3.
 
         :param vec: The vector to validate.
-        :type vec: np.ndarray
+        :type vec: np.ndarray | list | tuple
         :param verbose: If True, prints validation messages.
         :type verbose: bool
         :return: True if valid, False otherwise.
         :rtype: bool
         """
         try:
-            if not isinstance(vec, np.ndarray):
-                raise TypeError(f"Translation vector must be np.ndarray, got {type(vec)}")
+            # Attempt to convert to a NumPy array to handle lists/tuples
+            vec_np = np.array(vec)
 
-            if vec.size != _CARTESIAN_SIZE:
+            if vec_np.ndim != 1:
                 raise ValueError(
-                    f"Translation vector must be of length {_CARTESIAN_SIZE}, got {vec.size}"
+                    f"Translation vector must be 1-dimensional, got {vec_np.ndim} dimensions"
+                )
+
+            if vec_np.size != _CARTESIAN_SIZE:
+                raise ValueError(
+                    f"Translation vector must be of length {_CARTESIAN_SIZE}, got {vec_np.size}"
                 )
 
         except (ValueError, TypeError) as e:
